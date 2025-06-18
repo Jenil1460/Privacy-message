@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta ="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Emoji Encryptor</title>
+  <style>
+    * {
+      : 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      flex-: column;
+      min-height: 100vh;
+      line-height: 1.6;
+      color: #333;
+    }
+    header {
+      background-color: #4f46e5;
+      color: white;
+      padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    main {
+      flex-grow: 1;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 1rem;
+      resize: none;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    textarea:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    }
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin: 1rem 0 1.5rem;
+      gap: 1rem;
+    }
+    button {
+      flex: 1;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.1s;
+    }
+    button:active {
+      transform: scale(0.98);
+    }
+    #encryptBtn {
+      background-color: #4f46e5;
+      color: white;
+    }
+    #encryptBtn:hover {
+      background-color: #4338ca;
+    }
+    #decryptBtn {
+      background-color: #f59e0b;
+      color: white;
+    }
+    #decryptBtn:hover {
+      background-color: #d97706;
+    }
+    #copyBtn {
+      background-color: #4b5563;
+      color: white;
+      margin-top: 0.75rem;
+    }
+    #copyBtn:hover {
+      background-color: #374151;
+    }
+    #outputSection {
+      display: none;
+    }
+    #outputMessage {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      background-color: #f9fafb;
+      min-height: 100px;
+      word-break: break-word;
+      font-size: 1rem;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+    footer {
+      background-color: #1f2937;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    footer p {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      font-size: 0.875rem;
+    }
+    @media (max-width: 640px) {
+      .button-group {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Emoji Encryptor</h1>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="input-section">
+        <h2>Enter Your Message</h2>
+        <textarea id="inputMessage" rows="4" placeholder="Type your message here..."></textarea>
+      </div>
+
+      <div class="button-group">
+        <button id="encryptBtn">Encrypt to Emoji</button>
+        <button id="decryptBtn">Decrypt from Emoji</button>
+      </div>
+
+      <div id="outputSection">
+        <h2>Result</h2>
+        <div id="outputMessage"></div>
+        <button id="copyBtn">Copy to Clipboard</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© 2025 Emoji Encryptor. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+  const inputMessage = document.getElementById('inputMessage');
+  const encryptBtn = document.getElementById('encryptBtn');
+  const decryptBtn = document.getElementById('decryptBtn');
+  const outputSection = document.getElementById('outputSection');
+  const outputMessage = document.getElementById('outputMessage');
+  const copyBtn = document.getElementById('copyBtn');
+
+  const emojiMap = {
+    'a': '😀', 'b': '😁', 'c': '😂', 'd': '😃', 'e': '😄',
+    'f': '😅', 'g': '😆', 'h': '😇', 'i': '😈', 'j': '😉',
+    'k': '😊', 'l': '😋', 'm': '😌', 'n': '😍', 'o': '😎',
+    'p': '😏', 'q': '😐', 'r': '😑', 's': '😒', 't': '😓',
+    'u': '😔', 'v': '😕', 'w': '😖', 'x': '😗', 'y': '😘',
+    'z': '😙', ' ': '🙈', '.': '🙦', '!': '🙤'
+  };
+
+  const reverseEmojiMap = Object.fromEntries(
+    Object.entries(emojiMap).map(([k, v]) => [v, k])
+  );
+
+  function encryptToEmoji(text) {
+    return text.toLowerCase().split('').map(char => emojiMap[char] || char).join('');
+  }
+
+  function decryptFromEmoji(text) {
+    return [...text].map(emoji => reverseEmojiMap[emoji] || '?').join('');
+  }
+
+  function showOutput(text) {
+    outputMessage.textContent = text;
+    outputSection.style.display = 'block';
+    outputSection.classList.add('fade-in');
+    setTimeout(() => outputSection.classList.remove('fade-in'), 500);
+  }
+
+  encryptBtn.addEventListener('click', () => {
+    const message = inputMessage.value.trim();
+    if (message) {
+      showOutput(encryptToEmoji(message));
+    } else {
+      alert('Please enter a message to encrypt.');
+    }
+  });
+
+  decryptBtn.addEventListener('click', () => {
+    const message = inputMessage.value.trim();
+    if (message) {
+      showOutput(decryptFromEmoji(message));
+    } else {
+      alert('Please enter an emoji message to decrypt.');
+    }
+  });
+
+  copyBtn.addEventListener('click', () => {
+    const text = outputMessage.textContent;
+    if (!text) return;
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => copyBtn.textContent = 'Copy to Clipboard', 2000);
+      }).catch(() => fallbackCopy(text));
+    } else {
+      fallbackCopy(text);
+    }
+  });
+
+  function fallbackCopy(text) {
+    const tempTextarea = document.createElement('textarea');
+    tempTextarea.value = text;
+    tempTextarea.style.position = 'fixed';
+    tempTextarea.style.opacity = '0';
+    document.body.appendChild(tempTextarea);
+    tempTextarea.select();
+    try {
+      const successful = document.execCommand('copy');
+      if (successful) {
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => copyBtn.textContent = 'Copy to Clipboard', 2000);
+      } else {
+        alert('Failed to copy.');
+      }
+    } catch (err) {
+      alert('Failed to copy.');
+    }
+    document.body.removeChild(tempTextarea);
+  }
+</script>
+
+</body>
+</html>
